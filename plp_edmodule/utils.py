@@ -107,11 +107,13 @@ def update_module_enrollment_progress(enrollment):
     """
     обновление прогресса из edx по сессиям курсов, входящих в модуль, на который записан пользователь
     """
+    #TODO: удалить или обновить логику
+    return
     module = enrollment.module
     sessions = CourseSession.objects.filter(course__in=module.courses.all())
     course_ids = [s.get_absolute_slug_v1() for s in sessions if s.course_status().get('code') == STARTED]
     try:
-        data = EDXEnrollmentExtension().get_courses_progress(enrollment.user.username, course_ids).json()
+        data = EDXEnrollmentExtension(None).get_courses_progress(enrollment.user.username, course_ids).json()
         now = timezone.now().strftime('%H:%M:%S %Y-%m-%d')
         for k, v in data.items():
             v['updated_at'] = now
